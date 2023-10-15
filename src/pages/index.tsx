@@ -7,9 +7,10 @@ import axios from 'axios'
 import PokeHeader from '@/components/PokeHeader'
 import { Container, Grid } from '@mui/material'
 import PokeCard from '@/components/PokeCard'
+import { PokemonProps } from '@/types/pokemon'
 
 export default function Home() {
-  const [pokemons, setPokemons] = useState([])
+	const [pokemons, setPokemons] = useState<PokemonProps[]>([])
 	const [pokeTemp, setPokeTemp] = useState()
 	const handleFilterPokemon = (event) => {
 		const query = event.target.value;
@@ -59,7 +60,7 @@ export default function Home() {
 							<PokeCard
 								pokemon={pokemon}
 								name={pokemon.name}
-								image={pokemon.sprites.front_default}
+								image={pokemon.sprites.other.dream_world.front_default}
 							/>
 						</Grid>
 					))}
