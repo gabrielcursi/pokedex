@@ -7,21 +7,37 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import api from '@/services/api'
 import { useRouter } from 'next/router'
-import { Avatar, Box, Grid, IconButton } from '@mui/material';
+import { Avatar, Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Stack, styled } from '@mui/material';
 import { PokemonProps } from '@/types/pokemon';
 import { PokemonSpeciesProps } from '@/types/pokemon-species';
+import { motion } from "framer-motion"
 // import { StylesProvider } from "@material-ui/core/styles";
 import { colorTypeGradients, getTypeIconSrc } from '@/utils';
 import { capitalize, changeColorChip } from '@/components/PokeCard';
+import Delayed from '@/components/Delayed';
+import axios from 'axios';
+import { EvolutionChain } from '@/types/evolution-chain';
 // import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 // import { LazyLoadImage } from 'react-lazy-load-image-component';
 // import 'react-lazy-load-image-component/src/effects/blur.css';
 // import { motion } from "framer-motion"
 
+const Item = styled(Paper)(({ theme }) => ({
+	// backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+	backgroundColor: 'inherit',
+	boxShadow: 'none',
+	...theme.typography.body2,
+	padding: theme.spacing(1),
+	textAlign: 'center',
+	// color: theme.palette.text.secondary,
+}));
+
 
 function PokemonDetails() {
 	const [detailsPoke, setDetailsPoke] = useState<PokemonProps>()
 	const [pokeSpecies, setPokeSpecies] = useState<PokemonSpeciesProps>()
+	const [evoChain, setEvoChain] = useState<[EvolutionChain]>([])
+	console.log('evoChain',evoChain)
 	const { query } = useRouter()
 	const fetchGenderRate = (genderRate) => {
 
@@ -78,14 +94,23 @@ function PokemonDetails() {
 			if (nameQuery !== undefined) {
 
 				const response = await api.get(`/pokemon-species/${nameQuery}`)
-				console.log('aaaa', response.data)
 				setPokeSpecies(response.data)
 			}
 
 		}
 
+		const fetchEvoDetails = async (url: string) => {
+			try {
+				const response = await axios.get(url)
+				setEvoChain(response.data)
+			} catch (error) {
+				console.log('Error ->', error)
+			}
+		}
+
 		getPokemonSpecies()
 		getDetailsPokemon()
+		pokeSpecies?.evolution_chain.url && fetchEvoDetails(pokeSpecies?.evolution_chain.url)
 	}, [nameQuery])
 
 
@@ -166,12 +191,115 @@ function PokemonDetails() {
 									<Typography>About</Typography>
 									<Typography>{pokeSpecies.form_descriptions.length > 0 && pokeSpecies.form_descriptions[0].description ? pokeSpecies.form_descriptions[0].description : pokeSpecies.flavor_text_entries[0].flavor_text}</Typography>
 								</Box>
+								<Box>
+									<Typography>Abilities</Typography>
+
+									<div style={{
+										backgroundColor: '#ffffff40',
+										padding: '5px',
+										borderRadius: '1rem',
+										marginTop: '0.5rem',
+									}}>
+
+										<ul
+											style={{
+												display: 'flex',
+												gap: '0 30px',
+												paddingInlineStart: '1em',
+
+											}}
+										>
+											{
+												detailsPoke.abilities.map((abilitie, index) => (
+													<li style={{
+													}}>
+														<div style={{ textTransform: 'capitalize' }}>{abilitie.ability.name}&nbsp;</div>
+													</li>
+												))}
+										</ul>
+									</div>
+
+								</Box>
+								<Box>
+									<Typography>Base Stats</Typography>
+									<Grid container item>
+										<Grid md={4}>
+											<Box>
+												<Typography>HP</Typography>
+												<Typography>45</Typography>
+											</Box>
+											<Box>
+												<Typography>SPECIAL-ATTACK</Typography>
+												<Typography>65</Typography>
+											</Box>
+										</Grid>
+										<Grid md={4}>
+											<Box>
+												<Typography>HP</Typography>
+												<Typography>45</Typography>
+											</Box>
+											<Box>
+												<Typography>SPECIAL-ATTACK</Typography>
+												<Typography>65</Typography>
+											</Box>
+										</Grid>
+										<Grid md={4}>
+											<Box>
+												<Typography>HP</Typography>
+												<Typography>45</Typography>
+											</Box>
+											<Box>
+												<Typography>SPECIAL-ATTACK</Typography>
+												<Typography>65</Typography>
+											</Box>
+										</Grid>
+									</Grid>
+								</Box>
+								<Box>
+									<Typography>Evolutions</Typography>
+									<div className="evolution__box">
+										{evoChain.map((value, index, elements) =>
+											<Delayed waitBeforeShow={(index + 0) * 800} key={elements[index].species_name}>
+												<div className="evolution__sub__box">
+
+													<div>
+														<motion.div
+															animate={{ rotate: 360 }}
+															transition={{ duration: 2, ease: "easeOut", type: 'spring', bounce: 0.65, damping: 25 }}
+															whileHover={{ scale: 1.05 }}
+														>
+															<div className="evolution__img__div" style={{ background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})` }}>
+																<div className="transparency__div">
+																	<LazyLoadImage
+																		alt="image-pokemon"
+																		height={80}
+																		width={80}
+																		src={elements[index].image_url}
+																		visibleByDefault={false}
+																		delayMethod={'debounce'}
+																		effect="blur"
+																		className="evo_img"
+																		onClick={() => props.evolutionPokemon(props.number, elements[index].species_name, props.category, elements[index].image_url)}
+																	/>
+																</div>
+															</div>
+														</motion.div>
+														<div className="evolution__poke__name">{elements[index].species_name}</div>
+													</div>
+
+													{elements[index + 1] && <ArrowRightAltIcon className="arrow__right"></ArrowRightAltIcon>}
+												</div>
+											</Delayed>
+										)}
+									</div>
+
+								</Box>
 
 							</Grid>
 						</Grid>
 					</CardContent>
 				</Card>
-			</Box>
+			</Box >
 
 
 		)
