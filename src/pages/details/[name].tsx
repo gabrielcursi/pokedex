@@ -16,11 +16,12 @@ import { colorTypeGradients, getTypeIconSrc } from '@/utils';
 import { capitalize, changeColorChip } from '@/components/PokeCard';
 import Delayed from '@/components/Delayed';
 import axios from 'axios';
+
 import { EvolutionChain } from '@/types/evolution-chain';
 // import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
-// import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { ArrowRightAlt, FemaleRounded, MaleRounded } from '@mui/icons-material'
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 // import 'react-lazy-load-image-component/src/effects/blur.css';
-// import { motion } from "framer-motion"
 
 const Item = styled(Paper)(({ theme }) => ({
 	// backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,33 +37,35 @@ const Item = styled(Paper)(({ theme }) => ({
 function PokemonDetails() {
 	const [detailsPoke, setDetailsPoke] = useState<PokemonProps>()
 	const [pokeSpecies, setPokeSpecies] = useState<PokemonSpeciesProps>()
-	const [evoChain, setEvoChain] = useState<[EvolutionChain]>([])
-	console.log('evoChain',evoChain)
-	const { query } = useRouter()
-	const fetchGenderRate = (genderRate) => {
+	const [evoChain, setEvoChain] = useState<EvolutionChain>()
+	const [theOtherEvoChain, setTheOtherEvoChain] = useState()
 
-		switch (genderRate) {
-			case 0:
-				return <div><span class="gender-male">100% <i class="fa fa-mars"></i></span><span> 0% <i class="fa fa-venus"></i></span></div>;
-			case 1:
-				return <div><span>87.5% <i class="fa fa-mars"></i></span><span>  12.5% <i class="fa fa-venus"></i></span></div>;
-			case 2:
-				return <div><span>75% <i class="fa fa-mars"></i></span><span>  25% <i class="fa fa-venus"></i></span></div>;
-			case 3:
-				return <div><span>62.5% <i class="fa fa-mars"></i></span><span>  37.5% <i class="fa fa-venus"></i></span></div>;
-			case 4:
-				return <div><span>50% <i class="fa fa-mars"></i></span><span>  50% <i class="fa fa-venus"></i></span></div>;
-			case 5:
-				return <div><span>37.5% <i class="fa fa-mars"></i></span><span>  62.5% <i class="fa fa-venus"></i></span></div>;
-			case 6:
-				return <div><span>25% <i class="fa fa-mars"></i></span><span>  75% <i class="fa fa-venus"></i></span></div>;
-			case 7:
-				return <div><span>12.5% <i class="fa fa-mars"></i></span><span>  87.5% <i class="fa fa-venus"></i></span></div>;
-			case 8:
-				return <div><span>0% <i class="fa fa-mars"></i></span><span>  100% <i class="fa fa-venus"></i></span></div>;
-			default:
-				return <span>Loading...</span>
-		}
+	const { query } = useRouter()
+	const fetchGenderRate = (genderRate: number) => {
+
+		console.log('asdasdsd', genderRate)
+
+		const MaleIcon = () => (
+			<MaleRounded />
+		)
+
+		const FemaleIcon = () => (
+			<FemaleRounded />
+		)
+
+		const gender = {
+			0: <><span>100% <MaleIcon /></span> <span>0%<FemaleIcon /></span></>,
+			1: <><span>87.5% <MaleIcon /></span> <span>12.5%<FemaleIcon /></span></>,
+			2: <><span>75% <MaleIcon /></span> <span>25%<FemaleIcon /></span></>,
+			3: <><span>62.5% <MaleIcon /></span> <span>37.5%%<FemaleIcon /></span></>,
+			4: <><span>50% <MaleIcon /></span> <span>50%<FemaleIcon /></span></>,
+			5: <><span>37.5% <MaleIcon /></span> <span>62.5%<FemaleIcon /></span></>,
+			6: <><span>25% <MaleIcon /></span> <span>75%<FemaleIcon /></span></>,
+			7: <><span>12.5% <MaleIcon /></span> <span>87.5%<FemaleIcon /></span></>,
+			8: <><span>0% <MaleIcon /></span> <span>0%<FemaleIcon /></span></>,
+		} as unknown as React.JSX.Element[]
+
+		return gender[genderRate] || 'Not found'
 	}
 
 	const nameQuery = query.name;
@@ -76,25 +79,51 @@ function PokemonDetails() {
 	}
 
 
-	useEffect(() => {
-		const getDetailsPokemon = async () => {
-			try {
-				if (nameQuery !== undefined) {
+	const getDetailsPokemon = async () => {
+		try {
+			if (nameQuery !== undefined) {
 
-					const response = await api.get(`/pokemon/${nameQuery}`)
-					setDetailsPoke(response.data)
-				}
-
-			} catch (error) {
-
+				const response = await api.get(`/pokemon/${nameQuery}`)
+				setDetailsPoke(response.data)
 			}
+
+		} catch (error) {
+
 		}
+	}
+	useEffect(() => {
 
 		const getPokemonSpecies = async () => {
 			if (nameQuery !== undefined) {
 
-				const response = await api.get(`/pokemon-species/${nameQuery}`)
-				setPokeSpecies(response.data)
+				await api.get(`/pokemon-species/${nameQuery}`).then(res => {
+					axios.get(res.data.evolution_chain.url).then(resUrl => {
+
+
+
+						const evoChain = [];
+						let evoData = resUrl.data.chain;
+
+						do {
+							const evoDetails = evoData['evolution_details'][0];
+
+							evoChain.push({
+								"species_name": evoData.species.name,
+								"min_level": !evoDetails ? 1 : evoDetails.min_level,
+								"trigger_name": !evoDetails ? null : evoDetails.trigger.name,
+								"item": !evoDetails ? null : evoDetails.item
+							});
+
+							evoData = evoData['evolves_to'][0];
+						} while (!!evoData && evoData.hasOwnProperty('evolves_to'));
+
+						fetchEvoImages(evoChain);
+					}).catch((err) => console.log("Error:", err));
+
+
+					setPokeSpecies(res.data)
+				})
+
 			}
 
 		}
@@ -108,10 +137,23 @@ function PokemonDetails() {
 			}
 		}
 
+		const fetchEvoImages = async (evoChainArr) => {
+
+			// debugger
+			for (let i = 0; i < evoChainArr.length; i++) {
+				const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evoChainArr[i].species_name}`).catch((err) => console.log("Error:", err));
+				response.data.sprites.other.dream_world.front_default ? evoChainArr[i]['image_url'] = response.data.sprites.other.dream_world.front_default : evoChainArr[i]['image_url'] = response.data.sprites.other['official-artwork'].front_default;
+			}
+			setTheOtherEvoChain(evoChainArr)
+
+
+		}
+
 		getPokemonSpecies()
 		getDetailsPokemon()
 		pokeSpecies?.evolution_chain.url && fetchEvoDetails(pokeSpecies?.evolution_chain.url)
 	}, [nameQuery])
+
 
 
 
@@ -175,11 +217,9 @@ function PokemonDetails() {
 										<Typography>Height 0.7 m/2' 4"</Typography>
 									</Box>
 									<Box>
-										<Typography>Height 0.7 m/2' 4"</Typography>
-									</Box>
-									<Box>
 										<Typography>Weight 6.9 kg/15.2 lbs</Typography>
 									</Box>
+									{fetchGenderRate(pokeSpecies?.gender_rate)}
 								</Box>
 								{/* </Card> */}
 
@@ -258,10 +298,9 @@ function PokemonDetails() {
 								<Box>
 									<Typography>Evolutions</Typography>
 									<div className="evolution__box">
-										{evoChain.map((value, index, elements) =>
+										{theOtherEvoChain && theOtherEvoChain.map((value, index, elements) =>
 											<Delayed waitBeforeShow={(index + 0) * 800} key={elements[index].species_name}>
 												<div className="evolution__sub__box">
-
 													<div>
 														<motion.div
 															animate={{ rotate: 360 }}
@@ -279,7 +318,10 @@ function PokemonDetails() {
 																		delayMethod={'debounce'}
 																		effect="blur"
 																		className="evo_img"
-																		onClick={() => props.evolutionPokemon(props.number, elements[index].species_name, props.category, elements[index].image_url)}
+																		onClick={() => {
+																			console.log('clicou')
+																		}}
+																	// onClick={() => getDetailsPokemon()}
 																	/>
 																</div>
 															</div>
@@ -287,7 +329,7 @@ function PokemonDetails() {
 														<div className="evolution__poke__name">{elements[index].species_name}</div>
 													</div>
 
-													{elements[index + 1] && <ArrowRightAltIcon className="arrow__right"></ArrowRightAltIcon>}
+													{elements[index + 1] && <ArrowRightAlt className="arrow__right"></ArrowRightAlt>}
 												</div>
 											</Delayed>
 										)}
