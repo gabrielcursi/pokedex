@@ -38,7 +38,7 @@ function PokemonDetails() {
 	const [detailsPoke, setDetailsPoke] = useState<PokemonProps>()
 	const [pokeSpecies, setPokeSpecies] = useState<PokemonSpeciesProps>()
 	const [evoChain, setEvoChain] = useState<EvolutionChain>()
-	const [theOtherEvoChain, setTheOtherEvoChain] = useState()
+	const [theOtherEvoChain, setTheOtherEvoChain] = useState([])
 
 	const { query } = useRouter()
 	const fetchGenderRate = (genderRate: number) => {

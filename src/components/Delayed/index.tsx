@@ -1,26 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 
-const Delayed = ({ waitBeforeShow, children }) => {
+type DelayedProps = {
+	waitBeforeShow: number
+	children: ReactNode
+}
+
+const Delayed = ({ waitBeforeShow, children }: DelayedProps) => {
 	const [hidden, setHidden] = useState(true)
 
 	useEffect(() => {
 		setTimeout(() => {
 			setHidden(false)
-		})
-	}, [waitBeforeShow]);
+		}, waitBeforeShow)
+	}, []);
 
-	if(hidden){
-		return ''
-	}else{
-		return(
-			children
-		)
-	}
+	return hidden ? '' : children
 
-	// return (
-	// 	hidden ? '' : children
-	// )
 };
 
 export default Delayed;
