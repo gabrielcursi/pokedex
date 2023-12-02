@@ -21,6 +21,7 @@ import { EvolutionChain } from '@/types/evolution-chain';
 // import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import { ArrowRightAlt, FemaleRounded, MaleRounded } from '@mui/icons-material'
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { Paragraph } from '@/components/Paragraph';
 // import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -190,11 +191,10 @@ function PokemonDetails() {
 									paddingX={3}
 									alignItems={'center'}>
 									<Box>
-
-										<Typography variant='h4'>#${String(detailsPoke.id).padStart(3, '0')}</Typography>
+									<Paragraph size='medium'>#{String(detailsPoke.id).padStart(3, '0')}</Paragraph>
 									</Box>
 									<Box>
-										<Typography>{capitalize(detailsPoke?.name)}</Typography>
+										<Paragraph size='Plarge'>{capitalize(detailsPoke?.name)}</Paragraph>
 									</Box>
 									<Box>
 										<Box>Seed Pokemon</Box>
