@@ -4,11 +4,12 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea, CardActions, CardHeader, Chip, Grid, IconButton, SvgIcon } from '@mui/material';
+import { Backdrop, CardActionArea, CardActions, CardHeader, Chip, CircularProgress, Grid, IconButton, SvgIcon } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { colorTypeGradients, getTypeIconSrc } from '@/utils';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { Paragraph } from '../Paragraph';
 
 export const changeColorChip = (name) => {
 	switch (name) {
@@ -86,8 +87,8 @@ export default function PokeCard({ pokemon, image }) {
 								{/* <MoreVertIcon /> */}
 							</IconButton>
 						}
-						title={<Typography variant='h5' color='black'>{capitalize(name)}</Typography>}
-						subheader={`#${String(id).padStart(3, '0')}`}
+						// subheader={<Paragraph size='Plarge'>{capitalize(name)}</Paragraph>}
+						title={<Paragraph size='normal'>#{String(id).padStart(3, '0')}</Paragraph>}
 					/>
 					<Box display='flex' justifyContent='center'>
 
@@ -98,6 +99,7 @@ export default function PokeCard({ pokemon, image }) {
 							image={image}
 							alt="Live from space album cover"
 						/>
+						
 					</Box>
 					{/* <CardMedia
         component="img"
@@ -106,7 +108,13 @@ export default function PokeCard({ pokemon, image }) {
         alt="Paella dish"
       /> */}
 					<CardContent>
-						<Box paddingTop={2} >
+						<Box >
+							<Box textAlign='center'>
+
+						<Paragraph size='Plarge'>{capitalize(name)}</Paragraph>
+							</Box>
+							<Box mt={2}>
+
 							<Grid container direction='row' justifyContent='center'>
 								{
 									types.map(type => {
@@ -121,6 +129,7 @@ export default function PokeCard({ pokemon, image }) {
 									})
 								}
 							</Grid>
+							</Box>
 						</Box>
 
 					</CardContent>
@@ -129,6 +138,7 @@ export default function PokeCard({ pokemon, image }) {
 			</Link>
 			{/* <CardActions disableSpacing>
       </CardActions> */}
+			
 		</Card>
 
 

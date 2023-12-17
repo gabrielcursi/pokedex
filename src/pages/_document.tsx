@@ -10,6 +10,9 @@ export default function Document() {
         <Main />
         <NextScript />
       </body>
+			<footer>
+			&copy; Create By Gabriel Bertaglia
+			</footer>
     </Html>
   )
 }

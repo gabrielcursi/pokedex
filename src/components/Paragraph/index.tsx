@@ -19,6 +19,7 @@ const StyledParagraphPokeLarge = styled(
 	{}
 )<StyledProps>(({ theme, bold, fm }) => ({
 	fontSize: 8 * 5,
+	color: "#000",
 	textTransform: 'capitalize',
 	fontFamily: fm !== "Press Start" ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
@@ -32,6 +33,7 @@ const StyledParagraphPokeMedium = styled(
 	{}
 )<StyledProps>(({ theme, color, bold, fm }) => ({
 	fontSize: '16px',
+	color: "#000",
 	fontFamily: fm !== "Press Start" ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
 	margin: 0,
@@ -43,6 +45,7 @@ const StyledParagraphPokeSmall = styled(
 	{}
 )<StyledProps>(({ theme, bold, fm }) => ({
 	fontSize: '14px',
+	color: "#000",
 	fontFamily: fm !== "Press Start" ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
 	margin: 0,
