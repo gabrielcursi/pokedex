@@ -59,7 +59,6 @@ export default function Home() {
 			<PokeHeader handleFilterPokemon={handleFilterPokemon} />
 			<Container maxWidth={false}>
 				<Box marginX={5}>
-
 					<Grid container spacing={8}>
 						{!load ? pokemons.map((pokemon, key) => (
 							<Grid item xs={12} sm={6} md={4} xl={2} key={key}>

@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import api from '@/services/api'
 import { useRouter } from 'next/router'
-import { Avatar, Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Stack, styled } from '@mui/material';
+import { Avatar, Box, Container, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Stack, styled } from '@mui/material';
 import { PokemonProps } from '@/types/pokemon';
 import { PokemonSpeciesProps } from '@/types/pokemon-species';
 import { motion } from "framer-motion"
@@ -174,14 +174,8 @@ function PokemonDetails() {
         image="/static/images/cards/contemplative-reptile.jpg"
       /> */}
 					<CardContent style={{ padding: '0px', height: '100%' }}>
-						<Grid container style={{ padding: '16px', height: '100%' }}>
-
-							<Grid md={'auto'} alignItems={'center'}>
-
-								{/* <Card style={{ background: 'hsla(0,0%,100%,.47058823529411764)' }}> */}
-								{/* <Card style={{
-										background: 'none'
-									}}> */}
+						<Grid container style={{ padding: '16px', height: '100%' }} justifyContent={'space-between'}>
+							<Grid md={3} sm={3} alignItems={'center'}>
 								<Box
 									height={1}
 									style={{ background: 'hsla(0,0%,100%,.47058823529411764)' }}
@@ -189,9 +183,10 @@ function PokemonDetails() {
 									display={'flex'}
 									flexDirection={'column'}
 									paddingX={3}
-									alignItems={'center'}>
+									alignItems={'center'}
+								>
 									<Box>
-									<Paragraph size='medium'>#{String(detailsPoke.id).padStart(3, '0')}</Paragraph>
+										<Paragraph size='medium'>#{String(detailsPoke.id).padStart(3, '0')}</Paragraph>
 									</Box>
 									<Box>
 										<Paragraph size='Plarge'>{capitalize(detailsPoke?.name)}</Paragraph>
@@ -226,13 +221,24 @@ function PokemonDetails() {
 								{/* </Card> */}
 							</Grid>
 
-							<Grid md={'auto'}>
+							<Grid md={8}>
 								<Box>
-									<Typography>About</Typography>
-									<Typography>{pokeSpecies.form_descriptions.length > 0 && pokeSpecies.form_descriptions[0].description ? pokeSpecies.form_descriptions[0].description : pokeSpecies.flavor_text_entries[0].flavor_text}</Typography>
+									<Paragraph size='Pmedium'>
+										About
+									</Paragraph>
+
+									<div style={{
+										backgroundColor: '#ffffff40',
+										padding: '5px',
+										borderRadius: '1rem',
+										marginTop: '0.5rem',
+									}}>
+
+										<Paragraph size='Pnormal'>{pokeSpecies.form_descriptions.length > 0 && pokeSpecies.form_descriptions[0].description ? pokeSpecies.form_descriptions[0].description : pokeSpecies.flavor_text_entries[0].flavor_text}</Paragraph>
+									</div>
 								</Box>
 								<Box>
-									<Typography>Abilities</Typography>
+									<Paragraph size='Pmedium' >Abilities</Paragraph>
 
 									<div style={{
 										backgroundColor: '#ffffff40',
@@ -246,14 +252,13 @@ function PokemonDetails() {
 												display: 'flex',
 												gap: '0 30px',
 												paddingInlineStart: '1em',
-
 											}}
 										>
 											{
 												detailsPoke.abilities.map((abilitie, index) => (
 													<li style={{
 													}}>
-														<div style={{ textTransform: 'capitalize' }}>{abilitie.ability.name}&nbsp;</div>
+														<Paragraph size='Pnormal' style={{ textTransform: 'capitalize' }}>{abilitie.ability.name}&nbsp;</Paragraph>
 													</li>
 												))}
 										</ul>
@@ -261,42 +266,51 @@ function PokemonDetails() {
 
 								</Box>
 								<Box>
-									<Typography>Base Stats</Typography>
-									<Grid container item>
-										<Grid md={4}>
-											<Box>
-												<Typography>HP</Typography>
-												<Typography>45</Typography>
-											</Box>
-											<Box>
-												<Typography>SPECIAL-ATTACK</Typography>
-												<Typography>65</Typography>
-											</Box>
+									<Paragraph size='Pmedium'>Base Stats</Paragraph>
+									<div style={{
+										backgroundColor: '#ffffff40',
+										padding: '5px',
+										borderRadius: '1rem',
+										marginTop: '0.5rem',
+									}}>
+										<Grid container item>
+											<Grid md={4}>
+
+												<Box>
+													<Paragraph size='Pnormal' colorRed>HP</Paragraph>
+													<Paragraph size='Pnormal'>45</Paragraph> {/* mock */}
+
+												</Box>
+												<Box>
+													<Paragraph size='Pnormal' colorRed>SPECIAL-ATTACK</Paragraph>
+													<Paragraph size='Pnormal'>65</Paragraph> {/* mock */}
+												</Box>
+											</Grid>
+											<Grid md={4}>
+												<Box>
+													<Paragraph size='Pnormal' colorRed>ATTACK</Paragraph>
+													<Paragraph size='Pnormal'>45</Paragraph> {/* mock */}
+												</Box>
+												<Box>
+													<Paragraph size='Pnormal' colorRed>SPECIAL-ATTACK</Paragraph>
+													<Paragraph size='Pnormal'>65</Paragraph> {/* mock */}
+												</Box>
+											</Grid>
+											<Grid md={4}>
+												<Box>
+													<Paragraph size='Pnormal' colorRed>DEFENSE</Paragraph>
+													<Paragraph size='Pnormal'>45</Paragraph> {/* mock */}
+												</Box>
+												<Box>
+													<Paragraph size='Pnormal' colorRed>SPEED</Paragraph>
+													<Paragraph size='Pnormal'>65</Paragraph> {/* mock */}
+												</Box>
+											</Grid>
 										</Grid>
-										<Grid md={4}>
-											<Box>
-												<Typography>HP</Typography>
-												<Typography>45</Typography>
-											</Box>
-											<Box>
-												<Typography>SPECIAL-ATTACK</Typography>
-												<Typography>65</Typography>
-											</Box>
-										</Grid>
-										<Grid md={4}>
-											<Box>
-												<Typography>HP</Typography>
-												<Typography>45</Typography>
-											</Box>
-											<Box>
-												<Typography>SPECIAL-ATTACK</Typography>
-												<Typography>65</Typography>
-											</Box>
-										</Grid>
-									</Grid>
+									</div>
 								</Box>
 								<Box>
-									<Typography>Evolutions</Typography>
+									<Paragraph size='Pmedium'>Evolutions</Paragraph>
 									<div className="evolution__box">
 										{theOtherEvoChain && theOtherEvoChain.map((value, index, elements) =>
 											<Delayed waitBeforeShow={(index + 0) * 800} key={elements[index].species_name}>
