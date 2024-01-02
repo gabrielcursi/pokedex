@@ -11,17 +11,17 @@ interface ParagraphProps extends StyledProps {
 interface StyledProps extends TypographyProps {
 	colorRed?: boolean
 	bold?: boolean
-	fm?: 'Press Start'
+	VT?: boolean
 }
 
 const StyledParagraphPokeLarge = styled(
 	Typography,
 	{}
-)<StyledProps>(({ theme, bold, fm }) => ({
-	fontSize: 8 * 5,
+)<StyledProps>(({ theme, bold, VT }) => ({
+	fontSize: VT ? 8 * 5 : '1rem',
 	color: "#000",
 	textTransform: 'capitalize',
-	fontFamily: fm !== "Press Start" ? "'VT323', monospace" : "'Press Start 2P', display",
+	fontFamily: VT ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
 	[theme.breakpoints.down('sm')]: {
 		fontSize: 8 * 3,
@@ -31,38 +31,38 @@ const StyledParagraphPokeLarge = styled(
 const StyledParagraphPokeSmall = styled(
 	Typography,
 	{}
-)<StyledProps>(({ theme, color, bold, fm }) => ({
-	fontSize: '16px',
+)<StyledProps>(({ theme, color, bold, VT }) => ({
+	fontSize: VT ? '16px' : '.0.4rem',
 	color: "#000",
-	fontFamily: fm !== "Press Start" ? "'VT323', monospace" : "'Press Start 2P', display",
+	fontFamily: VT ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
 	margin: 0,
-	lineHeight: '150%',
+	lineHeight: '100%',
 }))
 
 const StyledParagraphPokeNormal = styled(
 	Typography,
 	{}
-)<StyledProps>(({ theme, bold, fm, colorRed }) => ({
-	fontSize: '20px',
+)<StyledProps>(({ theme, bold, VT, colorRed }) => ({
+	fontSize: VT ? '20px' : '.6rem',
 	color: !colorRed ? "#000" : '#dc143c',
-	fontFamily: fm !== "Press Start" ? "'VT323', monospace" : "'Press Start 2P', display",
+	fontFamily: VT ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
 	margin: 0,
-	lineHeight: '150%',
+	 lineHeight: '100%',
 	// textTransform: up ? 'uppercase' : 'inherit'
 }))
 
 const StyledParagraphPokeMedium = styled(
 	Typography,
 	{}
-)<StyledProps>(({ theme, bold, fm, colorRed }) => ({
-	fontSize: '27px',
+)<StyledProps>(({ theme, bold, VT, colorRed }) => ({
+	fontSize: VT ? '27px' : '0.8rem',
 	color: !colorRed ? "#000" : '#dc143c',
-	fontFamily: fm !== "Press Start" ? "'VT323', monospace" : "'Press Start 2P', display",
+	fontFamily: VT ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
 	margin: 0,
-	lineHeight: '150%',
+	lineHeight: '100%',
 	// textTransform: up ? 'uppercase' : 'inherit'
 }))
 
@@ -85,7 +85,7 @@ const StyledParagracphMedium = styled(
 		fontSize: '40px'
 	}))
 
-export function Paragraph({ children, size, id, sx, bold, up, colorRed }: ParagraphProps) {
+export function Paragraph({ children, size, id, sx, bold, up, colorRed, VT }: ParagraphProps) {
 	const paragraphComponents = {
 		Plarge: StyledParagraphPokeLarge,
 		Psmall: StyledParagraphPokeSmall,
@@ -97,5 +97,5 @@ export function Paragraph({ children, size, id, sx, bold, up, colorRed }: Paragr
 
 	const CurrentComponent = paragraphComponents[size]
 
-	return <CurrentComponent id={id} sx={sx} bold={bold} colorRed={colorRed}>{children}</CurrentComponent>
+	return <CurrentComponent id={id} sx={sx} bold={bold} colorRed={colorRed} VT={VT}>{children}</CurrentComponent>
 }

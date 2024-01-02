@@ -165,7 +165,7 @@ function PokemonDetails() {
 		if (detailsPoke !== undefined && pokeSpecies !== undefined) return (
 			<Box height={'100vh'} display='flex' justifyContent='center' alignItems='center'>
 
-				<Card sx={{ height: '85vh' }} style={{ background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})` }} >
+				<Card sx={{ height: '85vh', width: '80vw' }} style={{ background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})` }} >
 					{/* <div><pre>{JSON.stringify(detailsPoke, null, 2)}</pre></div> */}
 					{/* <CardMedia
         component="img"
@@ -173,8 +173,11 @@ function PokemonDetails() {
         height="140"
         image="/static/images/cards/contemplative-reptile.jpg"
       /> */}
-					<CardContent style={{ padding: '0px', height: '100%' }}>
-						<Grid container style={{ padding: '16px', height: '100%' }} justifyContent={'space-between'}>
+					<CardContent style={{ padding: '0px', height: '100%', 
+					minHeight: '60vh', overflow: 'auto'
+					 }}>
+						<Grid container style={{ padding: '16px', 
+					 }} justifyContent={'space-between'}>
 							<Grid md={3} sm={3} alignItems={'center'}>
 								<Box
 									height={1}
@@ -208,8 +211,10 @@ function PokemonDetails() {
 
 										Icon
 									</Box>
-									<Box>
-										<Typography>Height 0.7 m/2' 4"</Typography>
+									<Box display={'flex'}>
+										<Paragraph size='Pnormal' bold>Height</Paragraph>
+										<Paragraph size='Pnormal' VT>Height</Paragraph>
+										{/* <Typography>Height 0.7 m/2' 4"</Typography> */}
 									</Box>
 									<Box>
 										<Typography>Weight 6.9 kg/15.2 lbs</Typography>
@@ -340,7 +345,8 @@ function PokemonDetails() {
 																</div>
 															</div>
 														</motion.div>
-														<div className="evolution__poke__name">{elements[index].species_name}</div>
+														<Paragraph size='Pnormal'>{capitalize(elements[index].species_name)}</Paragraph>
+														{/* <div className="evolution__poke__name">{elements[index].species_name}</div> */}
 													</div>
 
 													{elements[index + 1] && <ArrowRightAlt className="arrow__right"></ArrowRightAlt>}
