@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react'
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -39,7 +40,7 @@ function PokemonDetails() {
 	const [detailsPoke, setDetailsPoke] = useState<PokemonProps>()
 	const [pokeSpecies, setPokeSpecies] = useState<PokemonSpeciesProps>()
 	const [evoChain, setEvoChain] = useState<EvolutionChain>()
-	const [theOtherEvoChain, setTheOtherEvoChain] = useState([])
+	const [theOtherEvoChain, setTheOtherEvoChain] = useState<any[]>([])
 
 	const { query } = useRouter()
 	const fetchGenderRate = (genderRate: number) => {
@@ -71,7 +72,7 @@ function PokemonDetails() {
 
 	const nameQuery = query.name;
 
-	let finalColor;
+	let finalColor: any[];
 
 	if (detailsPoke?.types.length === 2) {
 		finalColor = colorTypeGradients(detailsPoke?.types[0].type.name, detailsPoke?.types[1].type.name, detailsPoke?.types.length);
@@ -138,14 +139,13 @@ function PokemonDetails() {
 			}
 		}
 
-		const fetchEvoImages = async (evoChainArr) => {
+		const fetchEvoImages = async (evoChainArr: string | any[] | ((prevState: never[]) => never[])) => {
 
-			// debugger
-			for (let i = 0; i < evoChainArr.length; i++) {
-				const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evoChainArr[i].species_name}`).catch((err) => console.log("Error:", err));
-				response.data.sprites.other.dream_world.front_default ? evoChainArr[i]['image_url'] = response.data.sprites.other.dream_world.front_default : evoChainArr[i]['image_url'] = response.data.sprites.other['official-artwork'].front_default;
-			}
-			setTheOtherEvoChain(evoChainArr)
+			// for (let i = 0; i < evoChainArr.length; i++) {
+			// 	const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evoChainArr[i].species_name}`).catch((err) => console.log("Error:", err));
+			// 	response.data.sprites.other.dream_world.front_default ? evoChainArr[i]['image_url'] = response.data.sprites.other.dream_world.front_default : evoChainArr[i]['image_url'] = response.data.sprites.other['official-artwork'].front_default;
+			// }
+			// setTheOtherEvoChain(evoChainArr)
 
 
 		}

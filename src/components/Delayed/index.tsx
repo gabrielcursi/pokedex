@@ -13,7 +13,7 @@ const Delayed = ({ waitBeforeShow, children }: DelayedProps) => {
 		setTimeout(() => {
 			setHidden(false)
 		}, waitBeforeShow)
-	}, []);
+	}, [waitBeforeShow]);
 
 	return hidden ? '' : children
 

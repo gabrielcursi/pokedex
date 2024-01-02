@@ -85,7 +85,7 @@ const StyledParagracphMedium = styled(
 		fontSize: '40px'
 	}))
 
-export function Paragraph({ children, size, id, sx, bold, up, colorRed, VT }: ParagraphProps) {
+export function Paragraph({ children, size, id, sx, bold, colorRed, VT }: ParagraphProps) {
 	const paragraphComponents = {
 		Plarge: StyledParagraphPokeLarge,
 		Psmall: StyledParagraphPokeSmall,

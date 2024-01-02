@@ -12,8 +12,8 @@ import { PokemonProps } from '@/types/pokemon'
 export default function Home() {
 	const [load, setLoad] = useState(true)
 	const [pokemons, setPokemons] = useState<PokemonProps[]>([])
-	const [pokeTemp, setPokeTemp] = useState()
-	const handleFilterPokemon = (event) => {
+	const [pokeTemp, setPokeTemp] = useState<any>()
+	const handleFilterPokemon = (event: { target: { value: any } }) => {
 		const query = event.target.value;
 		const allPokemon = [...pokeTemp];
 		const newArr = allPokemon.filter((pokemon) =>
@@ -24,7 +24,7 @@ export default function Home() {
 	useEffect(() => {
 		const getPokemons = async () => {
 			let endpoints = []
-			let newPokemons = []
+			let newPokemons: any[] | ((prevState: PokemonProps[]) => PokemonProps[]) = []
 			try {
 				const response = await api.get('/pokemon?limit=50')
 				for (let i = 1; i < response.data.results.length + 1; i++) {
@@ -56,7 +56,9 @@ export default function Home() {
 	return (
 
 		<div>
-			<PokeHeader handleFilterPokemon={handleFilterPokemon} />
+			<PokeHeader 
+			// handleFilterPokemon={handleFilterPokemon} 
+			/>
 			<Container maxWidth={false}>
 				<Box marginX={5}>
 					<Grid container spacing={8}>

@@ -1,6 +1,6 @@
-export const getTypeIconSrc = (type) => `../assets/types-icons/${ type }.svg`;
+export const getTypeIconSrc = (type: any) => `../assets/types-icons/${ type }.svg`;
 // /home/gabriel/Documents/ReactJS/pokedex/public/assets/images/types-icons
-export const colorTypeGradients = (type1, type2, length) => {
+export const colorTypeGradients = (type1: string | undefined, type2: string | undefined, length: number | undefined) => {
 
 	// debugger
 	let color1, color2;

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -11,7 +12,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Paragraph } from '../Paragraph';
 
-export const changeColorChip = (name) => {
+export const changeColorChip = (name: any) => {
 	switch (name) {
 		case 'bug':
 			return "#8cb230"
@@ -58,7 +59,7 @@ export const capitalize = (string: string) => {
 	return string.charAt(0).toUpperCase() + string.substr(1)
 }
 
-export default function PokeCard({ pokemon, image }) {
+export default function PokeCard({ pokemon, image }: any) {
 	const { name, types, id } = pokemon
 
 	let finalColor;
@@ -117,7 +118,7 @@ export default function PokeCard({ pokemon, image }) {
 
 							<Grid container direction='row' justifyContent='center'>
 								{
-									types.map(type => {
+									types.map((type: { type: { name: any; }; }) => {
 										const typeImg = getTypeIconSrc(type.type.name);
 										return (
 											<Box mr={1}>
