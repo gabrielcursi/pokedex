@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import api from '@/services/api'
 import axios from 'axios'
 import PokeHeader from '@/components/PokeHeader'
@@ -12,19 +12,11 @@ import { PokemonProps } from '@/types/pokemon'
 export default function Home() {
 	const [load, setLoad] = useState(true)
 	const [pokemons, setPokemons] = useState<PokemonProps[]>([])
-	const [pokeTemp, setPokeTemp] = useState<any>()
-	const handleFilterPokemon = (event: { target: { value: any } }) => {
-		const query = event.target.value;
-		const allPokemon = [...pokeTemp];
-		const newArr = allPokemon.filter((pokemon) =>
-			pokemon.name.toLowerCase().includes(query.toLowerCase()))
-		setPokemons(newArr);
-	}
-
+	
 	useEffect(() => {
 		const getPokemons = async () => {
 			let endpoints = []
-			let newPokemons: any[] | ((prevState: PokemonProps[]) => PokemonProps[]) = []
+			let newPokemons = [] as PokemonProps[]
 			try {
 				const response = await api.get('/pokemon?limit=50')
 				for (let i = 1; i < response.data.results.length + 1; i++) {
@@ -32,6 +24,7 @@ export default function Home() {
 				}
 
 				let resEndpoint = await axios.all(endpoints.map((endpoint) => axios.get(endpoint))).then(res => res)
+				console.log('resEndpoint', resEndpoint)
 				for (let i = 0; i < resEndpoint.length; i++) {
 					newPokemons = [
 						...newPokemons,
@@ -41,7 +34,6 @@ export default function Home() {
 					]
 				}
 				setPokemons(newPokemons)
-				setPokeTemp(newPokemons)
 				setLoad(false)
 			} catch (error) {
 				console.log('error', error)
@@ -56,9 +48,7 @@ export default function Home() {
 	return (
 
 		<div>
-			<PokeHeader 
-			// handleFilterPokemon={handleFilterPokemon} 
-			/>
+			<PokeHeader />
 			<Container maxWidth={false}>
 				<Box marginX={5}>
 					<Grid container spacing={8}>
@@ -66,7 +56,6 @@ export default function Home() {
 							<Grid item xs={12} sm={6} md={4} xl={2} key={key}>
 								<PokeCard
 									pokemon={pokemon}
-									name={pokemon.name}
 									image={pokemon.sprites.other.dream_world.front_default}
 								/>
 							</Grid>

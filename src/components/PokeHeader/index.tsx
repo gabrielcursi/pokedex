@@ -50,9 +50,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-export default function PokeHeader(
-	// { namePoke, handleFilterPokemon }
-	) {
+export default function PokeHeader() {
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

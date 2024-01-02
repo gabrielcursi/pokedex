@@ -11,55 +11,48 @@ import { colorTypeGradients, getTypeIconSrc } from '@/utils';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Paragraph } from '../Paragraph';
+import { PokemonProps } from '@/types/pokemon';
 
-export const changeColorChip = (name: any) => {
-	switch (name) {
-		case 'bug':
-			return "#8cb230"
-		case 'dark':
-			return "#58575f"
-		case 'dragon':
-			return "#0f6ac0"
-		case 'electric':
-			return "#eed535"
-		case 'fairy':
-			return "#ed6ec7"
-		case 'fighting':
-			return "#d04164"
-		case 'fire':
-			return "#fd7d24"
-		case 'flying':
-			return "#748fc9"
-		case 'ghost':
-			return "#556aae"
-		case 'grass':
-			return "#62b957"
-		case 'ground':
-			return "#dd7748"
-		case 'ice':
-			return "#61cec0"
-		case 'normal':
-			return "#9da0aa"
-		case 'poison':
-			return "#a552cc"
-		case 'psychic':
-			return "#ea5d60"
-		case 'rock':
-			return "#baab82"
-		case 'steel':
-			return "#417d9a"
-		case 'water':
-			return "#4a90da"
-		default:
-			return ''
+interface PokeCardProps {
+	pokemon: PokemonProps
+	image: string
+	
+}
+
+type ColorChip = {
+	[key: string]: string
+}
+
+export const changeColorChip = (name: string) => {
+	const typeName: ColorChip = {
+		"bug": "#8cb230",
+			"dark": "#58575f",
+		"dragon":"#0f6ac0",
+		"electric": "#eed535",
+		"fairy": "#ed6ec7",
+		"fighting": "#d04164",
+		"fire": "#fd7d24",
+		"flying": "#748fc9",
+		"ghost": "#556aae",
+		"grass": "#62b957",
+		"ground": "#dd7748",
+		"ice": "#61cec0",
+		"normal": "#9da0aa",
+		"poison": "#a552cc",
+		"psychic": "#ea5d60",
+		"rock": "#baab82",
+		"steel": "#417d9a",
+		"water": "#4a90da"
 	}
+
+	return typeName[name]
 }
 
 export const capitalize = (string: string) => {
 	return string.charAt(0).toUpperCase() + string.substr(1)
 }
 
-export default function PokeCard({ pokemon, image }: any) {
+export default function PokeCard({ pokemon, image }: PokeCardProps) {
 	const { name, types, id } = pokemon
 
 	let finalColor;
@@ -118,7 +111,7 @@ export default function PokeCard({ pokemon, image }: any) {
 
 							<Grid container direction='row' justifyContent='center'>
 								{
-									types.map((type: { type: { name: any; }; }) => {
+									types.map(type => {
 										const typeImg = getTypeIconSrc(type.type.name);
 										return (
 											<Box mr={1}>

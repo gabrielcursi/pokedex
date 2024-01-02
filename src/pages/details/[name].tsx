@@ -23,6 +23,7 @@ import { EvolutionChain } from '@/types/evolution-chain';
 import { ArrowRightAlt, FemaleRounded, MaleRounded } from '@mui/icons-material'
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Paragraph } from '@/components/Paragraph';
+import { OtherEvoChain } from '@/types/other-evo-chain';
 // import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -35,12 +36,19 @@ const Item = styled(Paper)(({ theme }) => ({
 	// color: theme.palette.text.secondary,
 }));
 
+interface EvoChainProps {
+	data: PokemonProps
+}
+
 
 function PokemonDetails() {
 	const [detailsPoke, setDetailsPoke] = useState<PokemonProps>()
 	const [pokeSpecies, setPokeSpecies] = useState<PokemonSpeciesProps>()
 	const [evoChain, setEvoChain] = useState<EvolutionChain>()
-	const [theOtherEvoChain, setTheOtherEvoChain] = useState<any[]>([])
+	const [theOtherEvoChain, setTheOtherEvoChain] = useState<OtherEvoChain[]>([])
+
+	// console.log('theOtherEvoChain',theOtherEvoChain)
+	console.log(JSON.stringify(theOtherEvoChain, undefined, 4));
 
 	const { query } = useRouter()
 	const fetchGenderRate = (genderRate: number) => {
@@ -72,11 +80,11 @@ function PokemonDetails() {
 
 	const nameQuery = query.name;
 
-	let finalColor: any[];
+	let finalColor: (string | undefined)[];
 
 	if (detailsPoke?.types.length === 2) {
 		finalColor = colorTypeGradients(detailsPoke?.types[0].type.name, detailsPoke?.types[1].type.name, detailsPoke?.types.length);
-	} else {
+	} else if(detailsPoke?.types) {
 		finalColor = colorTypeGradients(detailsPoke?.types[0].type.name, detailsPoke?.types[0].type.name, detailsPoke?.types.length);
 	}
 
@@ -103,7 +111,7 @@ function PokemonDetails() {
 
 
 
-						const evoChain = [];
+						const evoChain: OtherEvoChain[] = [];
 						let evoData = resUrl.data.chain;
 
 						do {
@@ -113,7 +121,7 @@ function PokemonDetails() {
 								"species_name": evoData.species.name,
 								"min_level": !evoDetails ? 1 : evoDetails.min_level,
 								"trigger_name": !evoDetails ? null : evoDetails.trigger.name,
-								"item": !evoDetails ? null : evoDetails.item
+								"item": !evoDetails ? null : evoDetails.item,
 							});
 
 							evoData = evoData['evolves_to'][0];
@@ -139,13 +147,13 @@ function PokemonDetails() {
 			}
 		}
 
-		const fetchEvoImages = async (evoChainArr: string | any[] | ((prevState: never[]) => never[])) => {
+		const fetchEvoImages = async (evoChainArr: OtherEvoChain[]) => {
 
-			// for (let i = 0; i < evoChainArr.length; i++) {
-			// 	const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evoChainArr[i].species_name}`).catch((err) => console.log("Error:", err));
-			// 	response.data.sprites.other.dream_world.front_default ? evoChainArr[i]['image_url'] = response.data.sprites.other.dream_world.front_default : evoChainArr[i]['image_url'] = response.data.sprites.other['official-artwork'].front_default;
-			// }
-			// setTheOtherEvoChain(evoChainArr)
+			for (let i = 0; i < evoChainArr.length; i++) {
+				const {data: {sprites}} = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evoChainArr[i].species_name}`).catch((err) => console.log("Error:", err)) as unknown as EvoChainProps
+				sprites.other.dream_world.front_default ? evoChainArr[i]['image_url'] = sprites.other.dream_world.front_default : evoChainArr[i]['image_url'] = sprites.other['official-artwork'].front_default;
+			}
+			setTheOtherEvoChain(evoChainArr)
 
 
 		}
