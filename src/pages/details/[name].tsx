@@ -185,8 +185,8 @@ function PokemonDetails() {
 					minHeight: '60vh', overflow: 'auto'
 					 }}>
 						<Grid container style={{ padding: '16px', 
-					 }} justifyContent={'space-between'}>
-							<Grid md={3} sm={3} alignItems={'center'}>
+					 }} justifyContent={'space-between'} height={'100%'}>
+							<Grid item md={3} sm={3} alignItems={'center'}>
 								<Box
 									height={1}
 									style={{ background: 'hsla(0,0%,100%,.47058823529411764)' }}
@@ -200,7 +200,7 @@ function PokemonDetails() {
 										<Paragraph size='medium'>#{String(detailsPoke.id).padStart(3, '0')}</Paragraph>
 									</Box>
 									<Box>
-										<Paragraph size='Plarge'>{capitalize(detailsPoke?.name)}</Paragraph>
+										<Paragraph size='Plarge' bold>{capitalize(detailsPoke?.name)}</Paragraph>
 									</Box>
 									<Box>
 										<Box>Seed Pokemon</Box>
@@ -234,24 +234,25 @@ function PokemonDetails() {
 								{/* </Card> */}
 							</Grid>
 
-							<Grid md={8}>
-								<Box>
-									<Paragraph size='Pmedium'>
+							<Grid item md={8}>
+								<Box mb={1}>
+									<Paragraph size='Pmedium' bold>
 										About
 									</Paragraph>
 
 									<div style={{
 										backgroundColor: '#ffffff40',
-										padding: '5px',
+										padding: '10px',
 										borderRadius: '1rem',
 										marginTop: '0.5rem',
+
 									}}>
 
 										<Paragraph size='Pnormal'>{pokeSpecies.form_descriptions.length > 0 && pokeSpecies.form_descriptions[0].description ? pokeSpecies.form_descriptions[0].description : pokeSpecies.flavor_text_entries[0].flavor_text}</Paragraph>
 									</div>
 								</Box>
-								<Box>
-									<Paragraph size='Pmedium' >Abilities</Paragraph>
+								<Box mb={1}>
+									<Paragraph size='Pmedium' bold>Abilities</Paragraph>
 
 									<div style={{
 										backgroundColor: '#ffffff40',
@@ -271,15 +272,17 @@ function PokemonDetails() {
 												detailsPoke.abilities.map((abilitie, index) => (
 													<li style={{
 													}}>
-														<Paragraph size='Pnormal' style={{ textTransform: 'capitalize' }}>{abilitie.ability.name}&nbsp;</Paragraph>
+														<Paragraph size='Pnormal' style={{
+															textTransform: 'capitalize'
+														}}>{abilitie.ability.name}&nbsp;</Paragraph>
 													</li>
 												))}
 										</ul>
 									</div>
 
 								</Box>
-								<Box>
-									<Paragraph size='Pmedium'>Base Stats</Paragraph>
+								<Box mb={1}>
+									<Paragraph size='Pmedium' bold>Base Stats</Paragraph>
 									<div style={{
 										backgroundColor: '#ffffff40',
 										padding: '5px',
@@ -323,7 +326,7 @@ function PokemonDetails() {
 									</div>
 								</Box>
 								<Box>
-									<Paragraph size='Pmedium'>Evolutions</Paragraph>
+									<Paragraph size='Pmedium' bold>Evolutions</Paragraph>
 									<div className="evolution__box">
 										{theOtherEvoChain && theOtherEvoChain.map((value, index, elements) =>
 											<Delayed waitBeforeShow={(index + 0) * 800} key={elements[index].species_name}>
