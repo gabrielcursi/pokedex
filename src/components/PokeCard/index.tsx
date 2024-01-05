@@ -12,11 +12,12 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Paragraph } from '../Paragraph';
 import { PokemonProps } from '@/types/pokemon';
+import PokeTypes from '../PokeTypes';
 
 interface PokeCardProps {
 	pokemon: PokemonProps
 	image: string
-	
+
 }
 
 type ColorChip = {
@@ -26,8 +27,8 @@ type ColorChip = {
 export const changeColorChip = (name: string) => {
 	const typeName: ColorChip = {
 		"bug": "#8cb230",
-			"dark": "#58575f",
-		"dragon":"#0f6ac0",
+		"dark": "#58575f",
+		"dragon": "#0f6ac0",
 		"electric": "#eed535",
 		"fairy": "#ed6ec7",
 		"fighting": "#d04164",
@@ -93,7 +94,7 @@ export default function PokeCard({ pokemon, image }: PokeCardProps) {
 							image={image}
 							alt="Live from space album cover"
 						/>
-						
+
 					</Box>
 					{/* <CardMedia
         component="img"
@@ -105,24 +106,13 @@ export default function PokeCard({ pokemon, image }: PokeCardProps) {
 						<Box >
 							<Box textAlign='center'>
 
-						<Paragraph size='Plarge'>{capitalize(name)}</Paragraph>
+								<Paragraph size='Plarge'>{capitalize(name)}</Paragraph>
 							</Box>
 							<Box mt={2}>
 
-							<Grid container direction='row' justifyContent='center'>
-								{
-									types.map(type => {
-										const typeImg = getTypeIconSrc(type.type.name);
-										return (
-											<Box mr={1}>
-												<IconButton disabled style={{ background: changeColorChip(type.type.name) }}>
-													<Avatar sx={{ height: 24, width: 24 }} alt={typeImg} src={typeImg} />
-												</IconButton>
-											</Box>
-										)
-									})
-								}
-							</Grid>
+								<Grid container direction='row' justifyContent='center'>
+									<PokeTypes types={types} />
+								</Grid>
 							</Box>
 						</Box>
 
@@ -132,7 +122,7 @@ export default function PokeCard({ pokemon, image }: PokeCardProps) {
 			</Link>
 			{/* <CardActions disableSpacing>
       </CardActions> */}
-			
+
 		</Card>
 
 

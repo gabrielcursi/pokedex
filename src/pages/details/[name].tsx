@@ -1,20 +1,17 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react'
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import api from '@/services/api'
 import { useRouter } from 'next/router'
-import { Avatar, Box, Container, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Stack, styled } from '@mui/material';
+import { Box, BoxProps, Chip, Grid, Paper, styled } from '@mui/material';
 import { PokemonProps } from '@/types/pokemon';
 import { PokemonSpeciesProps } from '@/types/pokemon-species';
 import { motion } from "framer-motion"
 // import { StylesProvider } from "@material-ui/core/styles";
-import { colorTypeGradients, getTypeIconSrc } from '@/utils';
-import { capitalize, changeColorChip } from '@/components/PokeCard';
+import { colorTypeGradients } from '@/utils';
+import { capitalize } from '@/components/PokeCard';
 import Delayed from '@/components/Delayed';
 import axios from 'axios';
 
@@ -24,6 +21,7 @@ import { ArrowRightAlt, FemaleRounded, MaleRounded } from '@mui/icons-material'
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Paragraph } from '@/components/Paragraph';
 import { OtherEvoChain } from '@/types/other-evo-chain';
+import PokeTypes from '@/components/PokeTypes';
 // import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -40,6 +38,10 @@ interface EvoChainProps {
 	data: PokemonProps
 }
 
+interface BoxFlexProps extends BoxProps {
+	male: string
+	female: string
+}
 
 function PokemonDetails() {
 	const [detailsPoke, setDetailsPoke] = useState<PokemonProps>()
@@ -47,32 +49,47 @@ function PokemonDetails() {
 	const [evoChain, setEvoChain] = useState<EvolutionChain>()
 	const [theOtherEvoChain, setTheOtherEvoChain] = useState<OtherEvoChain[]>([])
 
-	// console.log('theOtherEvoChain',theOtherEvoChain)
-	console.log(JSON.stringify(theOtherEvoChain, undefined, 4));
-
 	const { query } = useRouter()
 	const fetchGenderRate = (genderRate: number) => {
 
-		console.log('asdasdsd', genderRate)
-
 		const MaleIcon = () => (
-			<MaleRounded />
+			<MaleRounded style={{
+				color: '#7070ff'
+			}} />
 		)
 
 		const FemaleIcon = () => (
-			<FemaleRounded />
+			<FemaleRounded style={{
+				color: '#e03d58'
+			}} />
+		)
+
+		const BoxFlex = ({ female, male }: BoxFlexProps) => (
+			<Grid container justifyContent='center'>
+				<Grid item>
+					<Grid container alignItems='center'>
+
+						<Paragraph size='Pnormal' VT>{male}%</Paragraph>&nbsp;<MaleIcon />&nbsp;&nbsp;
+					</Grid>
+				</Grid>
+				<Grid item>
+					<Grid container alignItems='center'>
+						<Paragraph size='Pnormal' VT>{female}%</Paragraph>&nbsp;<FemaleIcon />
+					</Grid>
+				</Grid>
+			</Grid>
 		)
 
 		const gender = {
-			0: <><span>100% <MaleIcon /></span> <span>0%<FemaleIcon /></span></>,
-			1: <><span>87.5% <MaleIcon /></span> <span>12.5%<FemaleIcon /></span></>,
-			2: <><span>75% <MaleIcon /></span> <span>25%<FemaleIcon /></span></>,
-			3: <><span>62.5% <MaleIcon /></span> <span>37.5%%<FemaleIcon /></span></>,
-			4: <><span>50% <MaleIcon /></span> <span>50%<FemaleIcon /></span></>,
-			5: <><span>37.5% <MaleIcon /></span> <span>62.5%<FemaleIcon /></span></>,
-			6: <><span>25% <MaleIcon /></span> <span>75%<FemaleIcon /></span></>,
-			7: <><span>12.5% <MaleIcon /></span> <span>87.5%<FemaleIcon /></span></>,
-			8: <><span>0% <MaleIcon /></span> <span>0%<FemaleIcon /></span></>,
+			0: <BoxFlex male='100' female='0' />,
+			1: <BoxFlex male='87.5' female='12.5' />,
+			2: <BoxFlex male='75' female='25' />,
+			3: <BoxFlex male='62.5' female='37.5' />,
+			4: <BoxFlex male='50' female='50' />,
+			5: <BoxFlex male='37.5' female='62.5' />,
+			6: <BoxFlex male='25' female='75' />,
+			7: <BoxFlex male='12.5' female='87.5' />,
+			8: <BoxFlex male='0' female='0' />,
 		} as unknown as React.JSX.Element[]
 
 		return gender[genderRate] || 'Not found'
@@ -84,7 +101,7 @@ function PokemonDetails() {
 
 	if (detailsPoke?.types.length === 2) {
 		finalColor = colorTypeGradients(detailsPoke?.types[0].type.name, detailsPoke?.types[1].type.name, detailsPoke?.types.length);
-	} else if(detailsPoke?.types) {
+	} else if (detailsPoke?.types) {
 		finalColor = colorTypeGradients(detailsPoke?.types[0].type.name, detailsPoke?.types[0].type.name, detailsPoke?.types.length);
 	}
 
@@ -92,45 +109,33 @@ function PokemonDetails() {
 	const getDetailsPokemon = async () => {
 		try {
 			if (nameQuery !== undefined) {
-
 				const response = await api.get(`/pokemon/${nameQuery}`)
 				setDetailsPoke(response.data)
 			}
-
 		} catch (error) {
-
+			console.error(error)
 		}
 	}
-	useEffect(() => {
 
+	useEffect(() => {
 		const getPokemonSpecies = async () => {
 			if (nameQuery !== undefined) {
-
 				await api.get(`/pokemon-species/${nameQuery}`).then(res => {
 					axios.get(res.data.evolution_chain.url).then(resUrl => {
-
-
-
 						const evoChain: OtherEvoChain[] = [];
 						let evoData = resUrl.data.chain;
-
 						do {
 							const evoDetails = evoData['evolution_details'][0];
-
 							evoChain.push({
 								"species_name": evoData.species.name,
 								"min_level": !evoDetails ? 1 : evoDetails.min_level,
 								"trigger_name": !evoDetails ? null : evoDetails.trigger.name,
 								"item": !evoDetails ? null : evoDetails.item,
 							});
-
 							evoData = evoData['evolves_to'][0];
 						} while (!!evoData && evoData.hasOwnProperty('evolves_to'));
-
 						fetchEvoImages(evoChain);
 					}).catch((err) => console.log("Error:", err));
-
-
 					setPokeSpecies(res.data)
 				})
 
@@ -148,25 +153,16 @@ function PokemonDetails() {
 		}
 
 		const fetchEvoImages = async (evoChainArr: OtherEvoChain[]) => {
-
 			for (let i = 0; i < evoChainArr.length; i++) {
-				const {data: {sprites}} = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evoChainArr[i].species_name}`).catch((err) => console.log("Error:", err)) as unknown as EvoChainProps
+				const { data: { sprites } } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${evoChainArr[i].species_name}`).catch((err) => console.log("Error:", err)) as unknown as EvoChainProps
 				sprites.other.dream_world.front_default ? evoChainArr[i]['image_url'] = sprites.other.dream_world.front_default : evoChainArr[i]['image_url'] = sprites.other['official-artwork'].front_default;
 			}
 			setTheOtherEvoChain(evoChainArr)
-
-
 		}
-
 		getPokemonSpecies()
 		getDetailsPokemon()
 		pokeSpecies?.evolution_chain.url && fetchEvoDetails(pokeSpecies?.evolution_chain.url)
 	}, [nameQuery])
-
-
-
-
-	// const { id, flavor_text_entries, form_descriptions } = detailsPoke
 
 	const MainReturn = () => {
 
@@ -174,19 +170,14 @@ function PokemonDetails() {
 			<Box height={'100vh'} display='flex' justifyContent='center' alignItems='center'>
 
 				<Card sx={{ height: '85vh', width: '80vw' }} style={{ background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})` }} >
-					{/* <div><pre>{JSON.stringify(detailsPoke, null, 2)}</pre></div> */}
-					{/* <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="/static/images/cards/contemplative-reptile.jpg"
-      /> */}
-					<CardContent style={{ padding: '0px', height: '100%', 
-					minHeight: '60vh', overflow: 'auto'
-					 }}>
-						<Grid container style={{ padding: '16px', 
-					 }} justifyContent={'space-between'} height={'100%'}>
-							<Grid item md={3} sm={3} alignItems={'center'}>
+					<CardContent style={{
+						padding: '0px', height: '100%',
+						minHeight: '60vh', overflow: 'auto'
+					}}>
+						<Grid container style={{
+							padding: '16px',
+						}} justifyContent={'space-between'} height={'100%'}>
+							<Grid item md={3.5} alignItems={'center'}>
 								<Box
 									height={1}
 									style={{ background: 'hsla(0,0%,100%,.47058823529411764)' }}
@@ -202,10 +193,10 @@ function PokemonDetails() {
 									<Box>
 										<Paragraph size='Plarge' bold>{capitalize(detailsPoke?.name)}</Paragraph>
 									</Box>
-									<Box>
-										<Box>Seed Pokemon</Box>
+									<Box mb={2}>
+										<Chip style={{ background: finalColor[0] }} label={<Paragraph size='Pnormal'>{pokeSpecies.genera[7].genus}</Paragraph>} />
 									</Box>
-									<Box>
+									<Box mb={3}>
 										<CardMedia
 											component="img"
 											// width={200}
@@ -215,17 +206,18 @@ function PokemonDetails() {
 										/>
 										{/* <img src={detailsPoke?.sprites.other['official-artwork'].front_default} alt="poke-img" /> */}
 									</Box>
-									<Box>
+									<Box display={'flex'} mb={3}>
 
-										Icon
+										<PokeTypes types={detailsPoke.types} />
 									</Box>
 									<Box display={'flex'}>
-										<Paragraph size='Pnormal' bold>Height</Paragraph>
-										<Paragraph size='Pnormal' VT>Height</Paragraph>
+										<Paragraph size='Pnormal' bold VT>Height</Paragraph>&nbsp;
+										<Paragraph size='Pnormal' VT>{`${detailsPoke.height / 10} m/${`${Math.floor(detailsPoke.height / 10 * 3.28)}'${Math.round(((detailsPoke.height / 10 * 3.28) % 1) * 12)}"`} `}</Paragraph>
 										{/* <Typography>Height 0.7 m/2' 4"</Typography> */}
 									</Box>
-									<Box>
-										<Typography>Weight 6.9 kg/15.2 lbs</Typography>
+									<Box display={'flex'}>
+										<Paragraph size='Pnormal' bold VT>Weight</Paragraph>&nbsp;
+										<Paragraph size='Pnormal' VT>{` ${(detailsPoke.weight / 10).toFixed(1)} kg/${(detailsPoke.weight * 0.2205).toFixed(1)} lbs`}</Paragraph>
 									</Box>
 									{fetchGenderRate(pokeSpecies?.gender_rate)}
 								</Box>
@@ -290,38 +282,18 @@ function PokemonDetails() {
 										marginTop: '0.5rem',
 									}}>
 										<Grid container item>
-											<Grid md={4}>
-
-												<Box>
-													<Paragraph size='Pnormal' colorRed>HP</Paragraph>
-													<Paragraph size='Pnormal'>45</Paragraph> {/* mock */}
-
-												</Box>
-												<Box>
-													<Paragraph size='Pnormal' colorRed>SPECIAL-ATTACK</Paragraph>
-													<Paragraph size='Pnormal'>65</Paragraph> {/* mock */}
-												</Box>
-											</Grid>
-											<Grid md={4}>
-												<Box>
-													<Paragraph size='Pnormal' colorRed>ATTACK</Paragraph>
-													<Paragraph size='Pnormal'>45</Paragraph> {/* mock */}
-												</Box>
-												<Box>
-													<Paragraph size='Pnormal' colorRed>SPECIAL-ATTACK</Paragraph>
-													<Paragraph size='Pnormal'>65</Paragraph> {/* mock */}
-												</Box>
-											</Grid>
-											<Grid md={4}>
-												<Box>
-													<Paragraph size='Pnormal' colorRed>DEFENSE</Paragraph>
-													<Paragraph size='Pnormal'>45</Paragraph> {/* mock */}
-												</Box>
-												<Box>
-													<Paragraph size='Pnormal' colorRed>SPEED</Paragraph>
-													<Paragraph size='Pnormal'>65</Paragraph> {/* mock */}
-												</Box>
-											</Grid>
+											{
+												detailsPoke.stats.map((stat) => (
+													<>
+														<Grid md={4}>
+															<Box>
+																<Paragraph size='Pnormal' colorRed style={{ textTransform: 'capitalize' }}>{stat.stat.name.toUpperCase()}</Paragraph>
+																<Paragraph size='Pnormal'>{stat.base_stat.toString()}</Paragraph>
+															</Box>
+														</Grid>
+													</>
+												))
+											}
 										</Grid>
 									</div>
 								</Box>

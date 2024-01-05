@@ -29,7 +29,7 @@ const StyledParagraphPokeSmall = styled(
 	Typography,
 	{}
 )<StyledProps>(({ theme, color, bold, VT }) => ({
-	fontSize: VT ? '16px' : '.0.4rem',
+	fontSize: VT ? '16px' : '0.4rem',
 	color: "#000",
 	fontFamily: VT ? "'VT323', monospace" : "'Press Start 2P', display",
 	fontWeight: bold ? 'bold' : 'inherit',
